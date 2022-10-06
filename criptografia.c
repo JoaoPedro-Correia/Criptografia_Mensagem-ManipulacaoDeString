@@ -27,9 +27,11 @@ void strCpy(char *destino, char *origem)
 
 void strCat(char *str, char trecho)
 {
-    int tam;
-    tam = strLen(str);
-    str[tam]=trecho;
+    int i=0;
+    while(str[i]!='\0'){
+        i++;
+    }
+    str[i]=trecho;
 }
 
 char* lerString(){
@@ -102,12 +104,11 @@ void inverterStr(char *str, int inicio, int fim)
     }
 }
 
-char* tudoAbd(char *str, int origem, int *chegada)
+void tudoAbd(char *str, int origem, int *chegada, char *backup)
 {
-    char copia[TAMANHO], *backup;
+    char copia[TAMANHO];
     int i, cont=0; //Índice onde vai começar a correção da string. 
-    backup = (char *)malloc(1000*sizeof(char));
-
+    
     while(origem<*chegada)
     {
         if(str[origem]=='@' || str[origem]=='#' || str[origem]=='$')
@@ -121,7 +122,6 @@ char* tudoAbd(char *str, int origem, int *chegada)
         }
         origem++;
     }
-    return backup;
 }
 
 void sufixoRabbu(char *str, int origem, int *chegada)
@@ -175,9 +175,9 @@ void inversao2(char *str, int origem, int chegada)
     }
 }
 
-void juncao(char *str, int origem, int destino)
+void juncao(char *str, int origem, int destino, char *backup)
 {
-    tudoAbd(str, origem, &destino);
+    tudoAbd(str, origem, &destino, backup);
     sufixoRabbu(str, origem, &destino);
     inversaoQuaseTotal(str, origem, &destino);
     inversao2(str, origem, destino);
@@ -187,7 +187,8 @@ char *criptografarDados(char *string)
 {
     int *indiceCaracter, subStr;
     int qntdCaracteres, cont=0, indiceComeco=0;
-    char *backup;
+    char *backupAbd;
+    backupAbd = (char *)malloc(1000*sizeof(char));
 
     qntdCaracteres = contarSubstrings(string);
 
@@ -197,7 +198,7 @@ char *criptografarDados(char *string)
         subStr = cont % 5;
 
         if(subStr==0){
-            backup = tudoAbd(string, indiceComeco, &indiceCaracter[cont]);
+            tudoAbd(string, indiceComeco, &indiceCaracter[cont], backupAbd);
         }else if(subStr==1){
             sufixoRabbu(string, indiceComeco, &indiceCaracter[cont]);
         }else if(subStr==2){
@@ -205,10 +206,12 @@ char *criptografarDados(char *string)
         }else if(subStr==3){
             inversao2(string, indiceComeco, indiceCaracter[cont]);
         }else{
-            juncao(string, indiceComeco, indiceCaracter[cont]);
+            juncao(string, indiceComeco, indiceCaracter[cont], backupAbd);
         }
         indiceComeco=indiceCaracter[cont]+1;
+        printarString(backupAbd);
     }
+    return backupAbd;
 }
 
 char *descriptografarDados(char *string)
