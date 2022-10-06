@@ -25,7 +25,7 @@ void strCpy(char *destino, char *origem)
 	}
 }
 
-void strCat(char *str, char trecho)
+void strCat(char *str, char trecho)//só com um caracter
 {
     int i=0;
     while(str[i]!='\0'){
@@ -104,6 +104,7 @@ void inverterStr(char *str, int inicio, int fim)
     }
 }
 
+//FUNLÇÕES PARA CRIPTOGRAFAR
 void tudoAbd(char *str, int origem, int *chegada, char *backup)
 {
     char copia[TAMANHO];
@@ -185,13 +186,11 @@ void juncao(char *str, int origem, int destino, char *backup)
 
 char *criptografarDados(char *string)
 {
-    int *indiceCaracter, subStr;
-    int qntdCaracteres, cont=0, indiceComeco=0;
+    int *indiceCaracter, subStr, qntdCaracteres, cont=0, indiceComeco=0;
     char *backupAbd;
     backupAbd = (char *)malloc(1000*sizeof(char));
 
     qntdCaracteres = contarSubstrings(string);
-
     for(cont=0; cont<qntdCaracteres; cont++)
     {
         indiceCaracter = obterIndicesCaracteres(string, ' ');
@@ -214,16 +213,58 @@ char *criptografarDados(char *string)
     return backupAbd;
 }
 
-char *descriptografarDados(char *string)
+//FUNÇÕES PARA DESCRIPTOGRAFAR
+void retornoTudoAbd(char *str, int origem, int *chegada, char *backup)
 {
 
 }
+
+void retornoSufixoRabbu(char *str, int origem, int *chegada)
+{
+
+}
+
+void retornoInversaoQuaseTotal(char *str, int origem, int *chegada)
+{
+
+}
+
+void retornoJuncao(char *str, int origem, int destino, char *backup)
+{
+
+}
+
+void descriptografarDados(char *string, char *backup)
+{
+    int *indiceCaracter, subStr;
+    int qntdCaracteres, cont=0, indiceComeco=0;
+
+    qntdCaracteres = contarSubstrings(string);
+    for(cont=0; cont<qntdCaracteres; cont++)
+    {
+        indiceCaracter = obterIndicesCaracteres(string, ' ');
+        subStr = cont % 5;
+
+        if(subStr==0){
+            retornoTudoAbd(string, indiceComeco, &indiceCaracter[cont], backup);
+        }else if(subStr==1){
+            retornoSufixoRabbu(string, indiceComeco, &indiceCaracter[cont]);
+        }else if(subStr==2){
+            retornoInversaoQuaseTotal(string, indiceComeco, &indiceCaracter[cont]);
+        }else if(subStr==3){
+            inversao2(string, indiceComeco, indiceCaracter[cont]);
+        }else{
+            retornoJuncao(string, indiceComeco, indiceCaracter[cont], backup);
+        }
+        indiceComeco=indiceCaracter[cont]+1;
+    }
+}
  
 void main(){
-    char *mensagem;
+    char *mensagem, *backupAbd;
     mensagem = lerString();
-    criptografarDados(mensagem);
+    backupAbd=criptografarDados(mensagem);
     printarString(mensagem);
 
-    //descriptografarDados(mensagem);
+    descriptografarDados(mensagem,backupAbd);
 }
