@@ -32,8 +32,7 @@ void strCat(char *str, char trecho)
     str[tam]=trecho;
 }
 
-char* lerString()
-{
+char* lerString(){
     char *str;
     str = (char *)malloc(TAMANHO * sizeof(char));
     printf("Mensagem: ");
@@ -41,12 +40,13 @@ char* lerString()
     return str;
 }
 
-int contarSubstrings(char *string)
-{
-    int i, cont;
+int contarSubstrings(char *string){
+    int i, cont=0;
     for(i=0; string[i]!='\0'; i++)
     {
-        if(string[i]==' ') cont++;
+        if(string[i]==' '){
+            cont++;
+        } 
     }
     cont++;
     return cont;
@@ -222,5 +222,5 @@ void main(){
     criptografarDados(mensagem);
     printarString(mensagem);
 
-    descriptografarDados(mensagem);
+    //descriptografarDados(mensagem);
 }
