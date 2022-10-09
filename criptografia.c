@@ -34,7 +34,8 @@ void strCat(char *str, char trecho)//só com um caracter
     str[i]=trecho;
 }
 
-char* lerString(){
+char* lerString()
+{
     char *str;
     str = (char *)malloc(TAMANHO * sizeof(char));
     printf("Mensagem: ");
@@ -42,7 +43,8 @@ char* lerString(){
     return str;
 }
 
-int contarSubstrings(char *string){
+int contarSubstrings(char *string)
+{
     int i, cont=0;
     for(i=0; string[i]!='\0'; i++)
     {
@@ -54,7 +56,8 @@ int contarSubstrings(char *string){
     return cont;
 }
         
-int* obterIndicesCaracteres(char *str,char letra){//Pegar os índices dos espaços e do '\0'.
+int* obterIndicesCaracteres(char *str,char letra)
+{//Pegar os índices dos espaços e do '\0'.
     int i, j=0; 
     int tam=strLen(str); //garantir que vai pegar o '\0'
     int* v = (int*)malloc(tam * sizeof(int));
@@ -108,7 +111,7 @@ void inverterStr(char *str, int inicio, int fim)
 void tudoAbd(char *str, int origem, int *chegada, char *backup)
 {
     char copia[TAMANHO];
-    int i, cont=0; //Índice onde vai começar a correção da string. 
+    int i; //Índice onde vai começar a correção da string. 
     
     while(origem<*chegada)
     {
@@ -214,9 +217,26 @@ char *criptografarDados(char *string)
 }
 
 //FUNÇÕES PARA DESCRIPTOGRAFAR
-void retornoTudoAbd(char *str, int origem, int *chegada, char *backup)
+void retornoTudoAbd(char *str, int origem, int *chegada, char *backup, int *indiceBack)
 {
+    char copia[TAMANHO], caracter;
+    int i;
 
+    while(origem<*chegada){
+        if(str[origem]=='A'){
+            if(str[origem+1]=='b'){
+                if(str[origem+2]=='d')
+                {
+                    strCpy(copia, str);
+                    strModificar(str, &backup[*indiceBack], origem, &i);
+                    strCorrigir(str, copia, i, origem+3);
+
+                    *chegada += i - (origem+1);
+                }
+            }
+        }
+        origem++;//Soma no final de todo while
+    }
 }
 
 void retornoSufixoRabbu(char *str, int origem, int *chegada)
@@ -237,7 +257,7 @@ void retornoJuncao(char *str, int origem, int destino, char *backup)
 void descriptografarDados(char *string, char *backup)
 {
     int *indiceCaracter, subStr;
-    int qntdCaracteres, cont=0, indiceComeco=0;
+    int qntdCaracteres, cont=0, indiceComeco=0, indBackup=0;
 
     qntdCaracteres = contarSubstrings(string);
     for(cont=0; cont<qntdCaracteres; cont++)
@@ -246,7 +266,7 @@ void descriptografarDados(char *string, char *backup)
         subStr = cont % 5;
 
         if(subStr==0){
-            retornoTudoAbd(string, indiceComeco, &indiceCaracter[cont], backup);
+            retornoTudoAbd(string, indiceComeco, &indiceCaracter[cont], backup, &indBackup);
         }else if(subStr==1){
             retornoSufixoRabbu(string, indiceComeco, &indiceCaracter[cont]);
         }else if(subStr==2){
@@ -263,7 +283,7 @@ void descriptografarDados(char *string, char *backup)
 void main(){
     char *mensagem, *backupAbd;
     mensagem = lerString();
-    backupAbd=criptografarDados(mensagem);
+    backupAbd = criptografarDados(mensagem);
     printarString(mensagem);
 
     descriptografarDados(mensagem,backupAbd);
