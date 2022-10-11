@@ -84,11 +84,17 @@ void strModificar(char *str, char *trecho, int indice, int *n)
 void strCorrigir(char *strOriginal, char *strModelo, int iOriginal, int iModelo)
 {
     int tamModelo = strLen(strModelo);
+    int tamOriginal;
 
     while(iModelo<tamModelo)
     {
         strOriginal[iOriginal]=strModelo[iModelo];
         iModelo++;
+        iOriginal++;
+    }
+    while(strOriginal[iOriginal]!='\0')
+    {
+        strOriginal[iOriginal]='\0';
         iOriginal++;
     }
 }
@@ -211,7 +217,6 @@ char *criptografarDados(char *string)
             juncao(string, indiceComeco, indiceCaracter[cont], backupAbd);
         }
         indiceComeco=indiceCaracter[cont]+1;
-        printarString(backupAbd);
     }
     return backupAbd;
 }
@@ -219,8 +224,7 @@ char *criptografarDados(char *string)
 //FUNÇÕES PARA DESCRIPTOGRAFAR
 void retornoTudoAbd(char *str, int origem, int *chegada, char *backup, int *indiceBack)
 {
-    char copia[TAMANHO], caracter;
-    int i;
+    char copia[TAMANHO];
 
     while(origem<*chegada){
         if(str[origem]=='A'){
@@ -228,10 +232,11 @@ void retornoTudoAbd(char *str, int origem, int *chegada, char *backup, int *indi
                 if(str[origem+2]=='d')
                 {
                     strCpy(copia, str);
-                    strModificar(str, &backup[*indiceBack], origem, &i);
-                    strCorrigir(str, copia, i, origem+3);
+                    str[origem] = backup[*indiceBack];
+                    strCorrigir(str, copia, origem+1, origem+3);
 
-                    *chegada += i - (origem+1);
+                    *indiceBack += 1;
+                    *chegada -= 2;
                 }
             }
         }
@@ -241,7 +246,13 @@ void retornoTudoAbd(char *str, int origem, int *chegada, char *backup, int *indi
 
 void retornoSufixoRabbu(char *str, int origem, int *chegada)
 {
+    char copia[TAMANHO];
 
+    if(str[chegada-1]=='u' && str[chegada-2]=='b' && str[chegada-3]=='b' && str[chegada-4]=='a' && str[chegada-5]=='R')
+    {
+        strCpy(copia,str);
+        strCorrigir(str, copia, chegada-5, chegada);
+    }
 }
 
 void retornoInversaoQuaseTotal(char *str, int origem, int *chegada)
@@ -274,7 +285,7 @@ void descriptografarDados(char *string, char *backup)
         }else if(subStr==3){
             inversao2(string, indiceComeco, indiceCaracter[cont]);
         }else{
-            retornoJuncao(string, indiceComeco, indiceCaracter[cont], backup);
+            retornoJuncao(string, indiceComeco, indiceCaracter[cont], backup, &indBackup);
         }
         indiceComeco=indiceCaracter[cont]+1;
     }
@@ -283,8 +294,9 @@ void descriptografarDados(char *string, char *backup)
 void main(){
     char *mensagem, *backupAbd;
     mensagem = lerString();
-    backupAbd = criptografarDados(mensagem);
+    backupAbd = cherafarDados(mensagem);
     printarString(mensagem);
 
     descriptografarDados(mensagem,backupAbd);
+    printarString(mensagem);
 }
