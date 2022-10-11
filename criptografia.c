@@ -248,10 +248,10 @@ void retornoSufixoRabbu(char *str, int origem, int *chegada)
 {
     char copia[TAMANHO];
 
-    if(str[chegada-1]=='u' && str[chegada-2]=='b' && str[chegada-3]=='b' && str[chegada-4]=='a' && str[chegada-5]=='R')
+    if(str[*chegada-1]=='u' && str[*chegada-2]=='b' && str[*chegada-3]=='b' && str[*chegada-4]=='a' && str[*chegada-5]=='R')
     {
         strCpy(copia,str);
-        strCorrigir(str, copia, chegada-5, chegada);
+        strCorrigir(str, copia, *chegada-5, *chegada);
     }
 }
 
@@ -260,7 +260,7 @@ void retornoInversaoQuaseTotal(char *str, int origem, int *chegada)
 
 }
 
-void retornoJuncao(char *str, int origem, int destino, char *backup)
+void retornoJuncao(char *str, int origem, int destino, char *backup, int *indiceBack)
 {
 
 }
@@ -294,7 +294,7 @@ void descriptografarDados(char *string, char *backup)
 void main(){
     char *mensagem, *backupAbd;
     mensagem = lerString();
-    backupAbd = cherafarDados(mensagem);
+    backupAbd = criptografarDados(mensagem);
     printarString(mensagem);
 
     descriptografarDados(mensagem,backupAbd);
