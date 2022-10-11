@@ -252,17 +252,31 @@ void retornoSufixoRabbu(char *str, int origem, int *chegada)
     {
         strCpy(copia,str);
         strCorrigir(str, copia, *chegada-5, *chegada);
+        *chegada-=5;
     }
 }
 
 void retornoInversaoQuaseTotal(char *str, int origem, int *chegada)
 {
+    int tam = *chegada-origem;
+    char copia[TAMANHO];
 
+    tam=tam/2;
+    inverterStr(str, origem, *chegada-1);
+    if (str[origem+tam] == '#')
+    {
+        strCpy(copia,str);
+        strCorrigir(str, copia, origem+tam, origem+tam+1);
+        *chegada-=1;
+    }
 }
 
 void retornoJuncao(char *str, int origem, int destino, char *backup, int *indiceBack)
 {
-
+    inversao2(str, origem, destino);
+    retornoInversaoQuaseTotal(str, origem, &destino);
+    retornoSufixoRabbu(str, origem, &destino);
+    retornoTudoAbd(str, origem, &destino, backup, indiceBack);
 }
 
 void descriptografarDados(char *string, char *backup)
