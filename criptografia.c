@@ -173,11 +173,11 @@ void inversaoQuaseTotal(char *str, int origem, int *chegada)
     }
 }
 
-void inversao2(char *str, int origem, int chegada)
+void inversao2(char *str, int origem, int *chegada)
 {
     int ponteiro1=origem, ponteiro2=origem+1; //Ponteiro que vão selecionar os caracteres em par
     
-    while(ponteiro2 < chegada)
+    while(ponteiro2 < *chegada)
     {
         inverterStr(str, ponteiro1, ponteiro2);
         ponteiro1+=2;
@@ -185,11 +185,11 @@ void inversao2(char *str, int origem, int chegada)
     }
 }
 
-void juncao(char *str, int origem, int destino, char *backup)
+void juncao(char *str, int origem, int *destino, char *backup)
 {
-    tudoAbd(str, origem, &destino, backup);
-    sufixoRabbu(str, origem, &destino);
-    inversaoQuaseTotal(str, origem, &destino);
+    tudoAbd(str, origem, destino, backup);
+    sufixoRabbu(str, origem, destino);
+    inversaoQuaseTotal(str, origem, destino);
     inversao2(str, origem, destino);
 }
 
@@ -212,9 +212,9 @@ char *criptografarDados(char *string)
         }else if(subStr==2){
             inversaoQuaseTotal(string, indiceComeco, &indiceCaracter[cont]);
         }else if(subStr==3){
-            inversao2(string, indiceComeco, indiceCaracter[cont]);
+            inversao2(string, indiceComeco, &indiceCaracter[cont]);
         }else{
-            juncao(string, indiceComeco, indiceCaracter[cont], backupAbd);
+            juncao(string, indiceComeco, &indiceCaracter[cont], backupAbd);
         }
         indiceComeco=indiceCaracter[cont]+1;
     }
@@ -271,12 +271,12 @@ void retornoInversaoQuaseTotal(char *str, int origem, int *chegada)
     }
 }
 
-void retornoJuncao(char *str, int origem, int destino, char *backup, int *indiceBack)
+void retornoJuncao(char *str, int origem, int *destino, char *backup, int *indiceBack)
 {
     inversao2(str, origem, destino);
-    retornoInversaoQuaseTotal(str, origem, &destino);
-    retornoSufixoRabbu(str, origem, &destino);
-    retornoTudoAbd(str, origem, &destino, backup, indiceBack);
+    retornoInversaoQuaseTotal(str, origem, destino);
+    retornoSufixoRabbu(str, origem, destino);
+    retornoTudoAbd(str, origem, destino, backup, indiceBack);
 }
 
 void descriptografarDados(char *string, char *backup)
@@ -297,9 +297,9 @@ void descriptografarDados(char *string, char *backup)
         }else if(subStr==2){
             retornoInversaoQuaseTotal(string, indiceComeco, &indiceCaracter[cont]);
         }else if(subStr==3){
-            inversao2(string, indiceComeco, indiceCaracter[cont]);
+            inversao2(string, indiceComeco, &indiceCaracter[cont]);
         }else{
-            retornoJuncao(string, indiceComeco, indiceCaracter[cont], backup, &indBackup);
+            retornoJuncao(string, indiceComeco, &indiceCaracter[cont], backup, &indBackup);
         }
         indiceComeco=indiceCaracter[cont]+1;
     }
@@ -308,6 +308,7 @@ void descriptografarDados(char *string, char *backup)
 void main(){
     char *mensagem, *backupAbd;
     mensagem = lerString();
+
     backupAbd = criptografarDados(mensagem);
     printarString(mensagem);
 
