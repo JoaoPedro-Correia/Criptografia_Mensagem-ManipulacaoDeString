@@ -113,7 +113,7 @@ void inverterStr(char *str, int inicio, int fim)
     }
 }
 
-//FUNLÇÕES PARA CRIPTOGRAFAR
+//FUNÇÕES PARA CRIPTOGRAFAR
 void tudoAbd(char *str, int origem, int *chegada, char *backup)
 {
     char copia[TAMANHO];
@@ -228,15 +228,18 @@ void retornoTudoAbd(char *str, int origem, int *chegada, char *backup, int *indi
 
     while(origem<*chegada){
         if(str[origem]=='A'){
-            if(str[origem+1]=='b'){
-                if(str[origem+2]=='d')
-                {
-                    strCpy(copia, str);
-                    str[origem] = backup[*indiceBack];
-                    strCorrigir(str, copia, origem+1, origem+3);
+            if(origem+2<TAMANHO)
+            {
+                if(str[origem+1]=='b'){
+                    if(str[origem+2]=='d')
+                    {
+                        strCpy(copia, str);
+                        str[origem] = backup[*indiceBack];
+                        strCorrigir(str, copia, origem+1, origem+3);
 
-                    *indiceBack += 1;
-                    *chegada -= 2;
+                        *indiceBack += 1;
+                        *chegada -= 2;
+                    }
                 }
             }
         }
@@ -247,12 +250,14 @@ void retornoTudoAbd(char *str, int origem, int *chegada, char *backup, int *indi
 void retornoSufixoRabbu(char *str, int origem, int *chegada)
 {
     char copia[TAMANHO];
-
-    if(str[*chegada-1]=='u' && str[*chegada-2]=='b' && str[*chegada-3]=='b' && str[*chegada-4]=='a' && str[*chegada-5]=='R')
+    if(*chegada>5)
     {
-        strCpy(copia,str);
-        strCorrigir(str, copia, *chegada-5, *chegada);
-        *chegada-=5;
+        if(str[*chegada-1]=='u' && str[*chegada-2]=='b' && str[*chegada-3]=='b' && str[*chegada-4]=='a' && str[*chegada-5]=='R')
+        {
+            strCpy(copia,str);
+            strCorrigir(str, copia, *chegada-5, *chegada);
+            *chegada-=5;
+        }
     }
 }
 
