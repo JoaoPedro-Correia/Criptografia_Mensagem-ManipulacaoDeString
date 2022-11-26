@@ -56,19 +56,15 @@ int contarSubstrings(char *string)
     return cont;
 }
         
-int* obterIndicesCaracteres(char *str,char letra)
-{//Pegar os índices dos espaços e do '\0'.
-    int i, j=0; 
-    int tam=strLen(str); //garantir que vai pegar o '\0'
-    int* v = (int*)malloc(tam * sizeof(int));
+//FUNÇÃO NOVA
+int obterProximoIndicesCaracteres(char *str, int ind, char letra)
+{
+    int i=ind;
+    
+    while(str[i]!=letra && str[i]!='\0')
+        i++;
 
-    for(i=0; i<=tam; i++){
-        if(str[i]==letra || str[i]=='\0'){
-            v[j]=i;
-            j++;
-        }
-    }
-    return v;
+    return i;
 }
 
 void strModificar(char *str, char *trecho, int indice, int *n)
@@ -76,7 +72,9 @@ void strModificar(char *str, char *trecho, int indice, int *n)
     int i;
     int tam = strLen(trecho);
 
-    for(i=0; i<tam; i++) str[indice+i]=trecho[i];
+    for(i=0; i<tam; i++)
+        if(indice+i<TAMANHO)
+            str[indice+i]=trecho[i];
     
     *n=i+indice; //indice onde a mudanca acaba
 }
@@ -84,7 +82,6 @@ void strModificar(char *str, char *trecho, int indice, int *n)
 void strCorrigir(char *strOriginal, char *strModelo, int iOriginal, int iModelo)
 {
     int tamModelo = strLen(strModelo);
-    int tamOriginal;
 
     while(iModelo<tamModelo)
     {
@@ -127,8 +124,9 @@ void tudoAbd(char *str, int origem, int *chegada, char *backup)
             strCpy(copia, str);
             strModificar(str, "Abd", origem, &i);
             strCorrigir(str, copia, i, origem+1);//Adição de 1 para que pegue os caracteres depois do símbolo.
-
-            *chegada += i - (origem+1);
+            
+            if(*chegada+i-(origem+1)<TAMANHO)
+                *chegada += i - (origem+1);
         }
         origem++;
     }
@@ -159,7 +157,7 @@ void inversaoQuaseTotal(char *str, int origem, int *chegada)
     int tam, i;
 
     tam = *chegada-origem;
-    inverterStr(str, origem, *chegada-1);//subtrair 1 para demarcar exatamente o inicio e fim da substring
+    inverterStr(str, origem, *chegada-1);//subtrair 1 para demarcar exatamente o fim da substring
 
     if(tam%2==0)
     {
@@ -169,7 +167,9 @@ void inversaoQuaseTotal(char *str, int origem, int *chegada)
         strCpy(copia, str);
         strModificar(str, "#", indiceMudanca, &i);
         strCorrigir(str, copia, i, indiceMudanca);
-        *chegada+=1;
+        
+        if(*chegada+1<TAMANHO)
+            *chegada+=1;
     }
 }
 
@@ -180,8 +180,10 @@ void inversao2(char *str, int origem, int *chegada)
     while(ponteiro2 < *chegada)
     {
         inverterStr(str, ponteiro1, ponteiro2);
-        ponteiro1+=2;
-        ponteiro2+=2;
+        if(ponteiro2+2<TAMANHO){
+            ponteiro1+=2;
+            ponteiro2+=2;
+        }
     }
 }
 
@@ -193,30 +195,33 @@ void juncao(char *str, int origem, int *destino, char *backup)
     inversao2(str, origem, destino);
 }
 
-char *criptografarDados(char *string)
+char *criptografarDados(char *string, int qntdCaracteres)
 {
-    int *indiceCaracter, subStr, qntdCaracteres, cont=0, indiceComeco=0;
-    char *backupAbd;
-    backupAbd = (char *)malloc(1000*sizeof(char));
+    int subStr, cont=0, indiceComeco=0;
+    //int *indiceCaracter;
+    int indiceCaracter;
 
-    qntdCaracteres = contarSubstrings(string);
+    char *backupAbd;
+    backupAbd = (char*)malloc(TAMANHO*sizeof(char));
+    
     for(cont=0; cont<qntdCaracteres; cont++)
     {
-        indiceCaracter = obterIndicesCaracteres(string, ' ');
+        //indiceCaracter = obterIndicesCaracteres(string, ' ');
+        indiceCaracter = obterProximoIndicesCaracteres(string, indiceComeco, ' ');
         subStr = cont % 5;
 
         if(subStr==0){
-            tudoAbd(string, indiceComeco, &indiceCaracter[cont], backupAbd);
+            tudoAbd(string, indiceComeco, &indiceCaracter, backupAbd);
         }else if(subStr==1){
-            sufixoRabbu(string, indiceComeco, &indiceCaracter[cont]);
+            sufixoRabbu(string, indiceComeco, &indiceCaracter);
         }else if(subStr==2){
-            inversaoQuaseTotal(string, indiceComeco, &indiceCaracter[cont]);
+            inversaoQuaseTotal(string, indiceComeco, &indiceCaracter);
         }else if(subStr==3){
-            inversao2(string, indiceComeco, &indiceCaracter[cont]);
+            inversao2(string, indiceComeco, &indiceCaracter);
         }else{
-            juncao(string, indiceComeco, &indiceCaracter[cont], backupAbd);
+            juncao(string, indiceComeco, &indiceCaracter, backupAbd);
         }
-        indiceComeco=indiceCaracter[cont]+1;
+        indiceComeco=indiceCaracter+1;
     }
     return backupAbd;
 }
@@ -276,7 +281,7 @@ void retornoInversaoQuaseTotal(char *str, int origem, int *chegada)
         }
     }
 
-    void retornoJuncao(char *str, int origem, int *destino, char *backup, int *indiceBack)
+void retornoJuncao(char *str, int origem, int *destino, char *backup, int *indiceBack)
     {
         inversao2(str, origem, destino);
         retornoInversaoQuaseTotal(str, origem, destino);
@@ -284,41 +289,47 @@ void retornoInversaoQuaseTotal(char *str, int origem, int *chegada)
         retornoTudoAbd(str, origem, destino, backup, indiceBack);
     }
 
-    void descriptografarDados(char *string, char *backup)
+void descriptografarDados(char *string, char *backup, int qntdCaracteres)
     {
-        int *indiceCaracter, subStr;
-        int qntdCaracteres, cont=0, indiceComeco=0, indBackup=0;
+        int subStr;
+        //int *indiceCaracter;
+        int indiceCaracter;
+        int cont=0, indiceComeco=0, indBackup=0;
 
-        qntdCaracteres = contarSubstrings(string);
         for(cont=0; cont<qntdCaracteres; cont++)
         {
-            indiceCaracter = obterIndicesCaracteres(string, ' ');
+            indiceCaracter = obterProximoIndicesCaracteres(string, indiceComeco, ' ');
             subStr = cont % 5;
 
             if(subStr==0){
-                retornoTudoAbd(string, indiceComeco, &indiceCaracter[cont], backup, &indBackup);
+                retornoTudoAbd(string, indiceComeco, &indiceCaracter, backup, &indBackup);
             }else if(subStr==1){
-                retornoSufixoRabbu(string, indiceComeco, &indiceCaracter[cont]);
+                retornoSufixoRabbu(string, indiceComeco, &indiceCaracter);
             }else if(subStr==2){
-                retornoInversaoQuaseTotal(string, indiceComeco, &indiceCaracter[cont]);
+                retornoInversaoQuaseTotal(string, indiceComeco, &indiceCaracter);
             }else if(subStr==3){
-                inversao2(string, indiceComeco, &indiceCaracter[cont]);
+                inversao2(string, indiceComeco, &indiceCaracter);
             }else{
-                retornoJuncao(string, indiceComeco, &indiceCaracter[cont], backup, &indBackup);
+                retornoJuncao(string, indiceComeco, &indiceCaracter, backup, &indBackup);
             }
-            indiceComeco=indiceCaracter[cont]+1;
+            indiceComeco=indiceCaracter+1;
         }
     }
  
 void main(){
-    char *mensagem, *backupAbd;
-    mensagem = lerString();
+    char *backupAbd;
+    //char *mensagem;
+    //mensagem = lerString();
+    char mensagem[5000] = "Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc";
+    printarString(mensagem);
 
-    backupAbd = criptografarDados(mensagem);
+    int qntdSubstrings = contarSubstrings(mensagem);
+
+    backupAbd = criptografarDados(mensagem, qntdSubstrings);
     printf("\n\n->Mensagem Criptografada:\n");
     printarString(mensagem);
 
-    descriptografarDados(mensagem,backupAbd);
+    descriptografarDados(mensagem,backupAbd, qntdSubstrings);
     printf("\n\n->Mensagem Descriptografada:\n");
     printarString(mensagem);
 }
