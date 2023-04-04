@@ -318,9 +318,10 @@ void descriptografarDados(char *string, char *backup, int qntdCaracteres)
  
 void main(){
     char *backupAbd;
-    //char *mensagem;
-    //mensagem = lerString();
-    char mensagem[5000] = "Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc Ol@T#$xx# Amor abcd abcd @morr An@ raror abc abc";
+    char *mensagem;
+    
+    mensagem = lerString();
+    
     printarString(mensagem);
 
     int qntdSubstrings = contarSubstrings(mensagem);
@@ -333,3 +334,4 @@ void main(){
     printf("\n\n->Mensagem Descriptografada:\n");
     printarString(mensagem);
 }
+
